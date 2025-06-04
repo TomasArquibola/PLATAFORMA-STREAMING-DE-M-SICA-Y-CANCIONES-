@@ -54,16 +54,11 @@ ProMusic/
 6. Importá el archivo `database/esquema.sql`.
 7. Accedé a `http://localhost/ProMusic/frontend/login.html`.
 
----
-
-## 📸 Capturas
-
-*(Agregá imágenes si lo subís a GitHub con screenshots del login, panel, etc.)*
 
 ---
 
 ## 🧑‍💻 Autor
 
-Proyecto realizado por [Tu nombre]  
+Proyecto realizado por Tomás Arquíbola  
 7° 2° – EEST N.º 1 “Eduardo Ader” Vicente López  
 2025
