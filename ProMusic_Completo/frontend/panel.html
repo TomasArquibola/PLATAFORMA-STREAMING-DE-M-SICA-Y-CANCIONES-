@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel - ProMusic</title>
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <h2>Bienvenido a tu panel de canciones</h2>
+  <input type="text" id="titulo" placeholder="Título" />
+  <input type="text" id="artista" placeholder="Artista" />
+  <input type="file" id="archivo" accept=".mp3" />
+  <button onclick="subirCancion()">Subir canción</button>
+
+  <hr />
+  <h3>Tus canciones:</h3>
+  <ul id="lista-canciones"></ul>
+
+  <script>
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    cargarCanciones();
+
+    async function subirCancion() {
+      const formData = new FormData();
+      formData.append("titulo", document.getElementById("titulo").value);
+      formData.append("artista", document.getElementById("artista").value);
+      formData.append("archivo", document.getElementById("archivo").files[0]);
+      formData.append("id_usuario", usuario.id);
+
+      const res = await fetch("../backend/subir_cancion.php", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (data.status === "ok") {
+        alert("Canción subida");
+        cargarCanciones();
+      } else {
+        alert("Error: " + data.status);
+      }
+    }
+
+    async function cargarCanciones() {
+      const res = await fetch("../backend/canciones.php");
+      const canciones = await res.json();
+
+      const lista = document.getElementById("lista-canciones");
+      lista.innerHTML = "";
+      canciones.forEach(c => {
+        const item = document.createElement("li");
+        item.innerHTML = `
+          ${c.titulo} - ${c.artista}
+          <audio controls src="assets/${c.archivo}"></audio>
+          <button onclick="eliminarCancion(${c.id})">Eliminar</button>
+        `;
+        lista.appendChild(item);
+      });
+    }
+
+    async function eliminarCancion(id) {
+      const res = await fetch("../backend/eliminar_cancion.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id})
+      });
+      const data = await res.json();
+      if (data.status === "ok") cargarCanciones();
+    }
+  </script>
+</body>
+</html>
